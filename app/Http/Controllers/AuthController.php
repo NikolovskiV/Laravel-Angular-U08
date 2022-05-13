@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -22,15 +23,23 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
-    {
+    public function login(Request $request)
+    {   
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return $this->respondWithToken($token);
+        if(Auth::user()->role ==1 && $request->path()=='admin/login'){
+            $request->session()->put('user', Auth::user());
+            return redirect('admin/dashboard');
+        }
+        else if(Auth::user()->role !=1 && $request->path()=='admin/login'){
+            return redirect('admin/login');
+        }
+        else{
+            return $this->respondWithToken($token);        
+        }
     }
 
     /**
@@ -77,6 +86,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
+            'role' => Auth::user()->role,
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
