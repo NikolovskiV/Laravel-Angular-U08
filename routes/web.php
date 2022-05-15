@@ -30,7 +30,9 @@ Route::group([
     Route::get('/admin/dashboard',[AdminController::class, 'dashboard'])->name('Admin.dashboard');
     
     Route::get('/admin/add-user',[AdminController::class, 'addUser'])->name('Admin.addUser');
+    Route::get('/admin/edit-user/{id}',[AdminController::class, 'editUser'])->name('Admin.editUser');
     Route::post('/admin/save-user',[AdminController::class, 'saveUser'])->name('Admin.saveUser');
+    Route::post('/admin/save-user/{id}',[AdminController::class, 'saveUser'])->name('Admin.updateUser');
     Route::get('/admin/user-list',[AdminController::class, 'userList'])->name('Admin.userList');
     Route::post('/admin/get-all-users',[AdminController::class, 'getAllUsers'])->name('Admin.getAllUsers');
     Route::post('/admin/delete-user/{id}',[AdminController::class, 'deleteUser'])->name('Admin.deleteUser');

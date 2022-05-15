@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Lists;
 
 class AuthController extends Controller
 {
@@ -15,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -89,5 +91,64 @@ class AuthController extends Controller
             'role' => Auth::user()->role,
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+
+    public function register(Request $request, $id = ""){
+        $data['success'] = 0;
+        if($id == ""){
+            $user = new User();
+            $duplicate = User::where('email',$request->email)->first();
+        }
+        else{
+            $user = User::find($id);
+            $duplicate = User::where('id', '!=', $id)->where('email',$request->email)->first();
+        }
+
+        if(!is_null($duplicate)){
+            $data['message'] = "Email already exists";
+            return response()->json($data);
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if($id == ""){
+            $user->password = \Hash::make($request->password);
+        }
+        $user->role = 2;
+        $success = $user->save();
+
+        if($success){
+            $data['success'] = 1;
+            $data['message'] = "Successfully registered";
+        }
+        else{
+            $data['success'] = 0;
+            $data['message'] = "Something went wrong";
+        }
+        return response()->json($data);
+    }
+
+    public function savelist(Request $request){
+        $input = $request->all();
+        $recipes = array_unique(array_column($input, 'idMeal'));
+        
+        Lists::where('user_id', Auth::user()->id)->delete();
+        $list = [];
+        $i = 0;
+        foreach($recipes as $rec){
+            $list[$i]['user_id'] = Auth::user()->id;
+            $list[$i]['recipe_id'] = $rec;
+        }
+        $success = Lists::insert($list);
+        if($success){
+            $data['success'] = 1;
+            $data['message'] = "Successfully saved";
+        }
+        else{
+            $data['success'] = 0;
+            $data['message'] = "Something went wrong";
+        }
+        return $data;
     }
 }

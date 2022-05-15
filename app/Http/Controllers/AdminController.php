@@ -23,20 +23,39 @@ class AdminController extends Controller
     public function addUser(Request $request){
         return view('add_user');
     }
-    public function saveUser(Request $request){
-        $user = new User();
+    public function saveUser(Request $request, $id = ""){
+        if($id == ""){
+            $user = new User();
+            $duplicate = User::where('email',$request->email)->first();
+        }
+        else{
+            $user = User::find($id);
+            $duplicate = User::where('id', '!=', $id)->where('email',$request->email)->first();
+        }
+
+        if(!is_null($duplicate)){
+            return redirect()->back()->with('error', "Email already exists")->withInput();
+        }
+
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = $request->password;
+        if($id == ""){
+            $user->password =  \Hash::make($request->password);
+        }
         $user->role = $request->role;
         $success = $user->save();
 
         if($success){
-            return redirect('admin/add-user')->with('success', "Successfully Saved");
+            return redirect('admin/user-list')->with('success', "Successfully Saved");
         }
         else{
             return redirect()->back()->with('error', "Couldn't save!")->withInput();
         }
+    }
+
+    public function editUser(Request $request, $id){
+        $user = User::where('id', $id)->first();
+        return view('edit_user')->with('user', $user);
     }
 
     public function userList(Request $request){
