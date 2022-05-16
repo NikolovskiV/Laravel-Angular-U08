@@ -30,6 +30,9 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
+            if($request->path()=='admin/login'){
+                return redirect('admin/login')->with('error', "Email and Password do not match");
+            }
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         if(Auth::user()->role ==1 && $request->path()=='admin/login'){
@@ -139,6 +142,7 @@ class AuthController extends Controller
         foreach($recipes as $rec){
             $list[$i]['user_id'] = Auth::user()->id;
             $list[$i]['recipe_id'] = $rec;
+            $i++;
         }
         $success = Lists::insert($list);
         if($success){
