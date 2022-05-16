@@ -18,7 +18,7 @@ use App\Http\Controllers\AuthController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('api/register', [AuthController::class, 'register']);
+
 Route::group([
 
     'middleware' => 'api',
@@ -28,9 +28,11 @@ Route::group([
 
     // Route::post('login', 'AuthController@login')->name('login');
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
     Route::post('register/{id}', [AuthController::class, 'register']);
     Route::post('savelist', [AuthController::class, 'savelist']);
+    Route::post('get-item-user', [AuthController::class, 'getItemByUser']);
 });

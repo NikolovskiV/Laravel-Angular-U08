@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Log in</title>
+    <title>Recipes Admin | Log in</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="{{URL::to('adminlte3/plugins/fontawesome-free/css/all.min.css')}}">
@@ -13,7 +13,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{URL::to('')}}"><b>Admin</b>LTE</a>
+            <a href="{{URL::to('')}}"><b>Recipes</b>Admin</a>
         </div>
         <div class="card">
             <div class="card-body login-card-body">

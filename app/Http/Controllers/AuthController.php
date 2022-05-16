@@ -155,4 +155,9 @@ class AuthController extends Controller
         }
         return $data;
     }
+
+    public function getItemByUser(Request $request){
+        $data = Lists::where('user_id', Auth::user()->id)->get();
+        return $data;
+    }
 }
