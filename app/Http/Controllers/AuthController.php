@@ -142,6 +142,7 @@ class AuthController extends Controller
         foreach($recipes as $rec){
             $list[$i]['user_id'] = Auth::user()->id;
             $list[$i]['recipe_id'] = $rec;
+            $list[$i]['recipe'] = json_encode($input);
             $i++;
         }
         $success = Lists::insert($list);
@@ -157,7 +158,7 @@ class AuthController extends Controller
     }
 
     public function getItemByUser(Request $request){
-        $data = Lists::where('user_id', Auth::user()->id)->get();
-        return $data;
+        $data = Lists::select('recipe')->where('user_id', Auth::user()->id)->get();
+        return response()->json($data);
     }
 }
