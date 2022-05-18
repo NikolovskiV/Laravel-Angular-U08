@@ -135,17 +135,25 @@ class AuthController extends Controller
     public function savelist(Request $request){
         $input = $request->all();
         $recipes = array_unique(array_column($input, 'idMeal'));
-        
         Lists::where('user_id', Auth::user()->id)->delete();
         $list = [];
         $i = 0;
         foreach($recipes as $rec){
             $list[$i]['user_id'] = Auth::user()->id;
             $list[$i]['recipe_id'] = $rec;
-            $list[$i]['recipe'] = json_encode($input);
+            $list[$i]['recipe'] = json_encode($input[$i]);
             $i++;
         }
+        // return $list;
         $success = Lists::insert($list);
+
+        // $list = new Lists();
+        // $list->user_id = Auth::user()->id;
+        // $list->recipe_id = 1;
+        // $list->recipe = json_encode($input);
+        // return json_encode($input);;
+        // $success = $list->save();
+        
         if($success){
             $data['success'] = 1;
             $data['message'] = "Successfully saved";
