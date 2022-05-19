@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Lists;
+use App\Models\Listname;
 
 class AuthController extends Controller
 {
@@ -168,5 +169,74 @@ class AuthController extends Controller
     public function getItemByUser(Request $request){
         $data = Lists::select('recipe')->where('user_id', Auth::user()->id)->get();
         return response()->json($data);
+    }
+
+    public function createList(Request $request){
+        $check = Listname::where('name', $request->name)->first();
+        if(!is_null($check)){
+            $data['success'] = 0;
+            $data['message'] = "Already Exists";
+        }
+        else{
+            $listname = new Listname();
+            $listname->name = $request->name;
+            $listname->user_id = Auth::user()->id;
+
+            $success = $listname->save();
+
+            if($success){
+                $data['success'] = 1;
+                $data['message'] = "Successfully saved";
+            }
+            else{
+                $data['success'] = 0;
+                $data['message'] = "Something went wrong";
+            }
+        }
+        
+        return $data;
+    }
+
+    public function getListNames(Request $request){
+        $listnames = Listname::where('user_id', Auth::user()->id)->get();
+        return $listnames;
+    }
+
+    public function saveItem(Request $request){
+        $listnames = $request->checkedlist;
+        $recipe = $request->recipe;
+        foreach ($listnames as $listname) {
+            $check = Lists::where('user_id', Auth::user()->id)->where('list_name', $listname)->where('recipe_id', $recipe['idMeal'])->first();
+            if(is_null($check)){
+                $list = new Lists();
+                $list->list_id = Listname::select('id')->where('name', $listname)->first()['id'];
+                $list->user_id = Auth::user()->id;
+                $list->list_name = $listname;
+                $list->recipe_id = $recipe['idMeal'];
+                $list->recipe = json_encode($request->recipe);
+                $list->save();
+            }
+        }
+        $data['success'] = 1;
+        $data['message'] = "Successfully saved";
+        return $data;
+    }
+
+    public function getitembylistbyid(Request $request){
+        $data = Lists::where('user_id', Auth::user()->id)->where('list_id', $request->all()[0])->get();
+        return $data;
+    }
+
+    public function itemDelete(Request $request){
+        $success = Lists::where('user_id', Auth::user()->id)->where('id', $request->all()[0])->delete();
+        if($success){
+            $data['success'] = 1;
+            $data['message'] = "Successfully deleted";
+        }
+        else{
+            $data['success'] = 0;
+            $data['message'] = "Something went wrong";
+        }
+        return $data;
     }
 }

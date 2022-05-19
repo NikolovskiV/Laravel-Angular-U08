@@ -35,4 +35,9 @@ Route::group([
     Route::post('register/{id}', [AuthController::class, 'register']);
     Route::post('savelist', [AuthController::class, 'savelist']);
     Route::post('get-item-user', [AuthController::class, 'getItemByUser']);
+    Route::post('create-list', [AuthController::class, 'createList']);
+    Route::post('get-list-name', [AuthController::class, 'getListNames']);
+    Route::post('save-item', [AuthController::class, 'saveItem']);
+    Route::post('item-list-byid', [AuthController::class, 'getitembylistbyid']);
+    Route::post('item-delete', [AuthController::class, 'itemDelete']);
 });

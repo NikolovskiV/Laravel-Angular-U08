@@ -3,8 +3,8 @@
 2) Fix registration (done)
 3) Add logout button (done)
 4) Cart page back button (done)
-5) when the user dont have any list saved
-6) load items from db after login
-7) header in every page
-8) error message wrong email, pass
-9) already saved when logged in
+5) when the user dont have any list saved (done)
+6) load items from db after login (done)
+7) header in every page (done)
+8) error message wrong email, pass (done)
+9) already saved when logged in (done)
