@@ -172,7 +172,7 @@ class AuthController extends Controller
     }
 
     public function createList(Request $request){
-        $check = Listname::where('name', $request->name)->first();
+        $check = Listname::where('name', $request->name)->where('user_id', Auth::user()->id)->first();
         if(!is_null($check)){
             $data['success'] = 0;
             $data['message'] = "Already Exists";
@@ -209,7 +209,7 @@ class AuthController extends Controller
             $check = Lists::where('user_id', Auth::user()->id)->where('list_name', $listname)->where('recipe_id', $recipe['idMeal'])->first();
             if(is_null($check)){
                 $list = new Lists();
-                $list->list_id = Listname::select('id')->where('name', $listname)->first()['id'];
+                $list->list_id = Listname::select('id')->where('name', $listname)->where('user_id', Auth::user()->id)->first()['id'];
                 $list->user_id = Auth::user()->id;
                 $list->list_name = $listname;
                 $list->recipe_id = $recipe['idMeal'];
